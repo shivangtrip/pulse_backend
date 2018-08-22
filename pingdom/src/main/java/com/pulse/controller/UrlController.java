@@ -2,10 +2,13 @@ package com.pulse.controller;
 
 
 import com.pulse.payload.URLPayload;
+import com.pulse.service.PingerService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,21 +19,47 @@ public class UrlController {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getIt(ArrayList<URLPayload> urlPayload) {
-        try {
-            for (URLPayload u:urlPayload) {
-                System.out.println(u.getUrl());
+        boolean flag = true;
+        for (URLPayload u : urlPayload) {
+            System.out.println(u.getUrl());
+            try {
                 URL url = new URL(u.getUrl());
                 url.toURI();
-            }
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int code = connection.getResponseCode();
+                if (code >= 500 && code <= 511) {
+                    u.setStatus("down");
+                    //System.out.println("website down");
+                    Thread thread = new Thread(new PingerService(u.getUrl()));
+                    thread.start();
+                } else {
+                    u.setStatus("up");
+                }
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+            }catch(MalformedURLException e){
+                flag = false;
+                u.setStatus("Invalid Url");
+            }
+            catch (URISyntaxException e) {
+                flag = false;
+                u.setStatus("Invalid Url");
+            } catch (IOException e) {
+                u.setStatus("down");
+                System.out.println("website down1");
+                Thread thread = new Thread(new PingerService(u.getUrl()));
+                thread.start();
+
+            }
         }
-        return Response.ok("success").build();
+        if (flag) {
+            return Response.ok(urlPayload).build();
+        } else {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(urlPayload).build();
+        }
+
     }
 
 }
