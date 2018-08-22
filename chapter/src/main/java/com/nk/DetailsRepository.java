@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 //import org.json.simple.JSONArray;
 //import org.json.simple.JSONObject;
@@ -19,12 +20,13 @@ import java.util.List;
 
 public class DetailsRepository {
     Connection  con = null;
-
+    static int cookieid ;
 
     public DetailsRepository()  {
         try {
+            //Properties props = new Properties();
             Class.forName("org.postgresql.Driver");
-            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/userdata","nandinik","nandinidb");
+            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pingdb","nandinik","nandinidb");
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -38,7 +40,8 @@ public class DetailsRepository {
     }
     public boolean signup (UserDetails a1) {
 
-        String sql = "insert into users (username,password,email) values( ?, crypt(?, gen_salt('bf')), ?) ";
+        String sql = "insert into users (username,password,email,roles) values( ?, crypt(?, gen_salt('bf')), ?,'admin') ";
+        System.out.println(sql);
         boolean flag =false;
         try {
             PreparedStatement st = con.prepareStatement(sql);
@@ -56,12 +59,12 @@ public class DetailsRepository {
         return flag;
     }
 
-    public  boolean login (UserDetails user) {
+    public  int login (UserDetails user) {
 
         String sql = " SELECT * FROM users WHERE  email= '" + user.email + "'" +  " AND password = crypt('" + user.password + "',password)";
         System.out.println(sql);
 
-        boolean flag = false;
+        cookieid = 0;
         Statement st = null;
         try {
             st = con.createStatement();
@@ -75,7 +78,8 @@ public class DetailsRepository {
 
             System.out.println(rs);
             if(rs.next()){
-            flag= true;
+                cookieid= rs.getInt("userid");
+
             }
 
         } catch (SQLException e) {
@@ -83,6 +87,25 @@ public class DetailsRepository {
             e.printStackTrace();
         }
 
-        return flag ;
+        return cookieid ;
     }
+    public  void addUser ( String email,int adminId) {
+
+        String sql = " Insert into invites  values(?,?)";
+        try {
+            PreparedStatement st = con.prepareStatement(sql);
+
+            st.setString(1, email);
+            st.setInt(2, adminId);
+            st.executeUpdate();
+        }catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
 }
