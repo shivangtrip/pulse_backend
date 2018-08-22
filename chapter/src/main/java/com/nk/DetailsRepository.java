@@ -3,35 +3,47 @@ package com.nk;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
-
-//import org.json.simple.JSONArray;
-//import org.json.simple.JSONObject;
-//import org.json.simple.parser.JSONParser;
-//import org.json.simple.parser.ParseException;
 
 public class DetailsRepository {
     Connection  con = null;
     static int cookieid ;
+    Properties props = new Properties();
+    InputStream inputStream;
+    String propFileName = "config.properties";
+    String db_username,db_password,db_url;
 
-    public DetailsRepository()  {
+    public DetailsRepository ()  {
         try {
-            //Properties props = new Properties();
-            Class.forName("org.postgresql.Driver");
-            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pingdb","nandinik","nandinidb");
+            inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+            if (inputStream != null) {
+                props.load(inputStream);
+            }
+            else {
+                throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+            }
+             db_username = props.getProperty("DATABASE_USER_NAME");
+             db_password = props.getProperty("DATABASE_PASSWORD");
+             db_url = props.getProperty("DATABASE_URL");
+             Class.forName(props.getProperty("LOAD_DRIVER"));
+             con = DriverManager.getConnection(db_url,db_username,db_password);
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -60,8 +72,8 @@ public class DetailsRepository {
     }
 
     public  int login (UserDetails user) {
-
-        String sql = " SELECT * FROM users WHERE  email= '" + user.email + "'" +  " AND password = crypt('" + user.password + "',password)";
+        String sql = " SELECT * from users where email = '"+user.email+"'";
+        String sql1 = " SELECT * FROM users WHERE  email= '" + user.email + "'" +  " AND password = crypt('" + user.password + "',password)";
         System.out.println(sql);
 
         cookieid = 0;
@@ -78,8 +90,10 @@ public class DetailsRepository {
 
             System.out.println(rs);
             if(rs.next()){
-                cookieid= rs.getInt("userid");
-
+                cookieid = -1;
+                rs = st.executeQuery(sql1);
+                if(rs.next())
+                {cookieid= rs.getInt("userid");}
             }
 
         } catch (SQLException e) {

@@ -1,10 +1,11 @@
 package com.nk;
 
 import java.net.URI;
-import java.text.DateFormat;
-import java.util.Date;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+
+
+
 @Path("users")
 public class DetailsResorce {
     DetailsRepository repo =new DetailsRepository();
@@ -13,19 +14,11 @@ public class DetailsResorce {
     @Path("signup")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response userSignup (UserDetails user) {
-
-        System.out.println("getting called");
-        String output = "Created customer <a href=\"customers/" +
-                user.getUsername() + "\">" + user.getUsername()
-                + "</a>";
-        String lastVisit = DateFormat.getDateTimeInstance(
-                DateFormat.SHORT, DateFormat.LONG).format(new Date());
         if(repo.signup(user))
         {
         return Response.created(URI.create("/users/"
                 + user.getUsername()))
-                .entity(output)
-                .cookie(new NewCookie("lastVisit",lastVisit))
+                .entity("You have successfully created an account , please login to continue ..").status(201).type("application/json")
                 .build();
         }
     return  Response.serverError().build();
@@ -45,9 +38,15 @@ public class DetailsResorce {
                 .cookie(new NewCookie("pulseId", String.valueOf(flag)))
                 .build();
         }
+        else{
+             if (flag== -1)
+                 return Response.status(Response.Status.UNAUTHORIZED)
+                         .entity("Email or password is incorrect")
+                         .type("application/json").build();
+        }
     return Response.status(Response.Status.NOT_FOUND)
-                .entity("NOT FOUND, Please signup")
-                .type("text/plain").build();
+                .entity("email does not exists, please signup")
+                .type("application/json").build();
     }
 
     @POST
@@ -55,8 +54,6 @@ public class DetailsResorce {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
      public Response createUser (String email, @CookieParam("pulseId") int adminId)
     {
-
-        System.out.println(adminId);
         if (adminId>0)
         {
         repo.addUser(email,adminId);
@@ -71,12 +68,10 @@ public class DetailsResorce {
     @GET
     @Path("logout")
     public Response logout (@CookieParam("pulseId") Cookie cookie) {
-//        logCookie = 0;
-//        return Response.status(Response.Status.REQUEST_TIMEOUT)  .entity("U have logged out").cookie(new NewCookie("pulseId",String.valueOf(logCookie))).type("text/plain").build();
-            
+
         if (cookie != null) {
             NewCookie newCookie = new NewCookie(cookie,null, 0, false);
-            return Response.ok("OK").cookie(newCookie).build();
+            return Response.ok("You have successfully logged out").cookie(newCookie).build();
         }
 
         return Response.ok("OK - No session").build();
