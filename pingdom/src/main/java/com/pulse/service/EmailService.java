@@ -1,6 +1,7 @@
 package com.pulse.service;
 import java.util.Properties;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -10,9 +11,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailService {
+    private final static Logger log = LoggerFactory.getLogger(EmailService.class);
+
     public void sendEmail(String email,String user, String url){
         final String username = "dineshkumar.e20@gmail.com"; // enter your mail id
-        final String password = "Elumalai20";// enter ur password
+        final String password = "password";// enter ur password
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -38,7 +41,7 @@ public class EmailService {
                     + "\n\n The Url "+url+" which you entered is working now. Checkout");
             Transport.send(message);
 
-            System.out.println("Done");
+            log.info("Done");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);

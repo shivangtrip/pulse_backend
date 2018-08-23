@@ -110,6 +110,12 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 .DS_Store
-
+config.properties
+./pingdom/src/main/resources/pulse.properties
+pulse.properties
+log4j.properties
+pingdom.log
 
 # End of https://www.gitignore.io/api/java,maven,intellij
+.idea
+.idea
