@@ -20,7 +20,7 @@ public class DetailsRepository {
     InputStream inputStream;
     String propFileName = "config.properties";
     String db_username,db_password,db_url;
-
+    MailService mailService = new MailService();
     public DetailsRepository ()  {
         try {
             inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
@@ -50,6 +50,8 @@ public class DetailsRepository {
 
 
     }
+
+
     public boolean signup (UserDetails a1) {
 
         String sql = "insert into users (username,password,email,roles) values( ?, crypt(?, gen_salt('bf')), ?,'admin') ";
@@ -71,13 +73,13 @@ public class DetailsRepository {
         return flag;
     }
 
+
     public  int login (UserDetails user) {
+        cookieid = 0;
+        Statement st = null;
         String sql = " SELECT * from users where email = '"+user.email+"'";
         String sql1 = " SELECT * FROM users WHERE  email= '" + user.email + "'" +  " AND password = crypt('" + user.password + "',password)";
         System.out.println(sql);
-
-        cookieid = 0;
-        Statement st = null;
         try {
             st = con.createStatement();
         } catch (SQLException e1) {
@@ -103,15 +105,20 @@ public class DetailsRepository {
 
         return cookieid ;
     }
+
+
     public  void addUser ( String email,int adminId) {
 
         String sql = " Insert into invites  values(?,?)";
         try {
+            if( mailService.sendMail(email)){
             PreparedStatement st = con.prepareStatement(sql);
 
             st.setString(1, email);
             st.setInt(2, adminId);
             st.executeUpdate();
+            }
+
         }catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

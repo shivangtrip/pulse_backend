@@ -52,11 +52,11 @@ public class DetailsResorce {
     @POST
     @Path("adduser")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-     public Response createUser (String email, @CookieParam("pulseId") int adminId)
+     public Response createUser (UserDetails userDetails, @CookieParam("pulseId") int adminId)
     {
         if (adminId>0)
         {
-        repo.addUser(email,adminId);
+        repo.addUser(userDetails.getEmail(),adminId);
         return Response.status(Response.Status.ACCEPTED).entity("added user, invite has been sent ").type("application/json").build();
         }
         return Response.status(Response.Status.UNAUTHORIZED)
