@@ -4,8 +4,6 @@ public class URLPayload {
     private String url;
     private String status;
 
-
-
     public URLPayload() {
     }
 
