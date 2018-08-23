@@ -5,7 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -15,6 +16,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailService {
+    private final static Logger log = LoggerFactory.getLogger(EmailService.class);
+
     public void sendEmail(String email,String user, String url){
         final Properties properties = new Properties();
         InputStream inputStream;
@@ -53,7 +56,7 @@ public class EmailService {
                     + "\n\n The Url "+url+" which you entered is working now. Checkout");
             Transport.send(message);
 
-            System.out.println("Done");
+            log.info("Done");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
