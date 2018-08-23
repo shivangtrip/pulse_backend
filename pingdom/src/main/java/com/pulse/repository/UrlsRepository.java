@@ -1,5 +1,6 @@
-package com.pulse.dbcp;
+package com.pulse.repository;
 
+import com.pulse.dbcp.DataBaseUtility;
 import com.pulse.payload.URLPayload;
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -8,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class DataBaseInit {
+public class UrlsRepository {
     private ArrayList<URLPayload> urlObj;
-    public DataBaseInit(ArrayList<URLPayload> urlList) {
+    public UrlsRepository(ArrayList<URLPayload> urlList) {
         this.urlObj = urlList;
         System.out.println("constructor has been called");
     }
@@ -25,15 +26,9 @@ public class DataBaseInit {
 
             BasicDataSource bds = DataBaseUtility.getInstance().getBds();
             connection = bds.getConnection();
-//            statement = connection
-//                    .createStatement();
-//            statement.executeUpdate("INSERT  into URLS(user_id,url,created_at,status) VALUES (1,'http://www.facebook.com','1970-01-01 00:00:01','up')");
-
             for(URLPayload uObj:urlObj) {
 
-
                 String sql = "insert into URLS(user_id,url,created_at,status) values(?,?,?,?)";
-//
 
                 try {
                     Date today = new java.util.Date();
@@ -43,13 +38,7 @@ public class DataBaseInit {
                     st.setString(2, uObj.getUrl());
                     st.setTimestamp(3, t);
                     st.setString(4, uObj.getStatus());
-
-
-//
-
                     st.executeUpdate();
-
-
                 } catch (Exception e) {
                     System.out.println("Statement3 error");
                 }

@@ -23,15 +23,15 @@
                 </configuration>
             </plugin>
             <plugin>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-maven-plugin</artifactId>
-            <version>5.1.4</version>
-            <configuration>
-                <driver>org.postgresql.Driver</driver>
-                <url>jdbc:postgresql://localhost:5432/pingdb</url>
-                <user>nandinik</user>
-                <password>nandinidb</password>
-            </configuration>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>5.1.4</version>
+                <configuration>
+                    <driver>org.postgresql.Driver</driver>
+                    <url>jdbc:postgresql://localhost:5432/pulse</url>
+                    <user>dineshkumare</user>
+                    <password>test</password>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -14,7 +14,7 @@ public class MailService {
     public boolean sendMail(String invitee_Mail) {
 
         final String username = "nandini2052@gmail.com"; // enter your mail id
-        final String password = " Akkadevatalu1 ";// enter ur password
+        final String password = "";// enter ur password
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");

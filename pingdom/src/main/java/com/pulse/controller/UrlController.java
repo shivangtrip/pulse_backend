@@ -1,7 +1,7 @@
 package com.pulse.controller;
 
 
-import com.pulse.dbcp.DataBaseInit;
+import com.pulse.repository.UrlsRepository;
 import com.pulse.payload.URLPayload;
 import com.pulse.service.PingerService;
 
@@ -55,7 +55,7 @@ public class UrlController {
 
             }
         }
-        DataBaseInit dbInit = new DataBaseInit(urlPayload);
+        UrlsRepository dbInit = new UrlsRepository(urlPayload);
         dbInit.dbConnect();
         if (flag) {
             return Response.ok(urlPayload).build();
