@@ -6,16 +6,19 @@ public class DataBaseUtility {
 
 
     private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
-
-
+    //enter your database name at the end instead of pulse
     private static final String DB_URL = "jdbc:postgresql://localhost/pulse";
-    private static final String DB_USER = "anandhk";
-    private static final String DB_PASSWORD = "jskanandh0606";
-    private static final int CONN_POOL_SIZE = 5;
+    //enter your local database username
+    private static final String DB_USER = "db_user";
+    //password for your respective db
+    private static final String DB_PASSWORD = "db_user_password";
+
+    private static final int CONN_POOL_SIZE = 10;
+
+
     private BasicDataSource bds = new BasicDataSource();
 
     private DataBaseUtility() {
-        System.out.println("hitting in the dbutility");
         //Set database driver name
         bds.setDriverClassName(DRIVER_CLASS_NAME);
         //Set database url

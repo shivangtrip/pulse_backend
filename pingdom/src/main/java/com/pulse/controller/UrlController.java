@@ -55,6 +55,7 @@ public class UrlController {
 
             }
         }
+        //Initiating database pooling
         DataBaseInit dbInit = new DataBaseInit(urlPayload);
         dbInit.dbConnect();
         if (flag) {
