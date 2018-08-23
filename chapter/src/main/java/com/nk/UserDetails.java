@@ -5,8 +5,14 @@ public class UserDetails {
     String username;
     String password;
     String email;
+    int userId;
+
+    public int  getUserId(){
+      return userId;
+    }
 
     public String getUsername() {
+
         return username;
     }
 
