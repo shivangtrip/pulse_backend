@@ -1,6 +1,7 @@
 package com.nk;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -14,8 +15,14 @@ public class DetailsResorce {
     @Path("signup")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response userSignup (UserDetails user) {
-        if(repo.signup(user))
+        System.out.println(user.getUsername());
+
+        if(repo.signup(user.getUsername(),user.getPassword(),user.getEmail()))
         {
+          repo.addAppInfo(user.getUsername());
+              repo.user_app_relation(user.getUsername());
+
+
         return Response.created(URI.create("/users/"
                 + user.getUsername()))
                 .entity("You have successfully created an account , please login to continue ..").status(201).type("application/json")
@@ -29,14 +36,21 @@ public class DetailsResorce {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response userLogin (UserDetails user) {
         System.out.println("getting called");
-      int flag=repo.login(user);
+        int flag=repo.login(user);
+        String url ="http://localhost:8080/webapi/users/myapps";
+        URI uri = null;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         if(flag>0)
-        {
-        return Response.created(URI.create("/users/"
-                + user.getUsername()))
+        {    if(repo.getCookie(flag)<0)
+             {repo.addCookie(flag);}
+             String  cookievalue= String.valueOf(repo.getCookie(flag));
+             return Response.seeOther(URI.create(url))
                 .entity("You have successfully logged in")
-                .cookie(new NewCookie("pulseId", String.valueOf(flag)))
-                .build();
+                .cookie(new NewCookie("pulseId", cookievalue)).build();
         }
         else{
              if (flag== -1)
@@ -77,4 +91,13 @@ public class DetailsResorce {
         return Response.ok("OK - No session").build();
 
     }
+
+    @GET
+    @Path("myapps")
+    public Response  list_apps (@CookieParam("pulseId") int cookieId) {
+
+         int app_id= repo.user_apps( cookieId);
+        return Response.ok("listing-apps  "+app_id).build();
+
+}
 }

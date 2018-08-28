@@ -1,0 +1,1 @@
+create table cookies_list ( cookie_id serial primary key , user_id integer not null references users(userid));

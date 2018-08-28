@@ -1,0 +1,1 @@
+create table apps(app_id serial primary key, appname text , created_at timestamp);

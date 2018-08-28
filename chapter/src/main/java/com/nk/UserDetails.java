@@ -7,12 +7,7 @@ public class UserDetails {
     String email;
     int userId;
 
-    public int  getUserId(){
-      return userId;
-    }
-
     public String getUsername() {
-
         return username;
     }
 
@@ -28,8 +23,6 @@ public class UserDetails {
         this.password = password;
     }
 
-
-
     public String getEmail() {
         return email;
     }
@@ -38,4 +31,11 @@ public class UserDetails {
         this.email = email;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }
