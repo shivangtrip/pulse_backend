@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DBCPConnectionHelper {
-    private final static Logger log = LoggerFactory.getLogger(UrlDBInsert.class);
+    private final static Logger log = LoggerFactory.getLogger(DBCPConnectionHelper.class);
     public Connection createConnection(){
         try {
             BasicDataSource basicDataSource = DBInit.getInstance().getBasicDataSource();
