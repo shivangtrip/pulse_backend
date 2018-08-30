@@ -211,7 +211,7 @@ public class UserDBDAO {
     }
 
     /**
-     * return list of user's apps
+     * return id  of user's apps
      *
      * @param cookieId
      * @return
