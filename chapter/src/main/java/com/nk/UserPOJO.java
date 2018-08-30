@@ -1,6 +1,6 @@
 package com.nk;
 
-public class UserDetails {
+public class UserPOJO {
 
     String username;
     String password;
@@ -22,8 +22,6 @@ public class UserDetails {
         this.password = password;
     }
 
-
-
     public String getEmail() {
         return email;
     }
@@ -31,5 +29,4 @@ public class UserDetails {
     public void setEmail(String email) {
         this.email = email;
     }
-
 }
