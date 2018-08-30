@@ -14,8 +14,8 @@ public class MailService {
 
     public boolean sendMail(String invitee_Mail) {
 
-        final String username = "nandini2052@gmail.com"; // enter your mail id
-        final String password = " Akkadevatalu1 ";// enter ur password
+        final String username = Constants.EMAIL; // enter your mail id
+        final String password = Constants.PASSWORD;// enter ur password
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -33,7 +33,7 @@ public class MailService {
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("nandini2052@gmail.com")); // same email id
+            message.setFrom(new InternetAddress(Constants.EMAIL)); // same email id
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(invitee_Mail));// whome u have to send mails that person id
             message.setSubject("Testing Subject");
