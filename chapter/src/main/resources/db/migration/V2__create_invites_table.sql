@@ -1,0 +1,1 @@
+create table invites (email_id text primary key,adminid integer ,FOREIGN KEY(adminid) references users(userid));

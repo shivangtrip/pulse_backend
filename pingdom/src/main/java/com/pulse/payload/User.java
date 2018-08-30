@@ -1,14 +1,13 @@
-package com.nk;
+package com.pulse.payload;
 
-public class UserDetails {
-
+public class User {
     String username;
     String password;
     String email;
     int userId;
 
     public int  getUserId(){
-      return userId;
+        return userId;
     }
 
     public String getUsername() {
@@ -39,3 +38,4 @@ public class UserDetails {
     }
 
 }
+
