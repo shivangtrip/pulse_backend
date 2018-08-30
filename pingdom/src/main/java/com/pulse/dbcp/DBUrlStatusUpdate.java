@@ -11,6 +11,9 @@ import java.sql.SQLException;
 
 public class DBUrlStatusUpdate {
     private final static Logger log = LoggerFactory.getLogger(UrlDBInsert.class);
+    private String DELETE_DOWN_URLS = "DELETE FROM URLS_DOWN WHERE url = ?";
+    private String UPDATE_DOWN_URLS = "UPDATE URLS set status='up' where url = ?";
+
 
     private String url;
 
@@ -18,7 +21,6 @@ public class DBUrlStatusUpdate {
         this.url = url;
     }
     public void deleteDownStatus(){
-        String sql = "DELETE FROM URLS_DOWN WHERE url = ?";
         DBCPConnectionHelper dbcpConnectionHelper = new DBCPConnectionHelper();
         Connection conn = null;
         ResultSet resultSet = null;
@@ -27,7 +29,7 @@ public class DBUrlStatusUpdate {
             conn = dbcpConnectionHelper.createConnection();
 
 
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(DELETE_DOWN_URLS);
             preparedStatement.setString(1,url);
             preparedStatement.executeUpdate();
         }catch (SQLException e){
@@ -52,8 +54,8 @@ public class DBUrlStatusUpdate {
             BasicDataSource basicDataSource = DBInit.getInstance().getBasicDataSource();
             conn = basicDataSource.getConnection();
 
-            String sql = "UPDATE URLS set status='up' where url = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_DOWN_URLS);
+
             preparedStatement.setString(1,url);
             preparedStatement.executeUpdate();
         }catch(SQLException e){

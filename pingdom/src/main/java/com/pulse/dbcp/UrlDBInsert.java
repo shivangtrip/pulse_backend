@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 public class UrlDBInsert {
     private final static Logger log = LoggerFactory.getLogger(UrlDBInsert.class);
+    private String INSERTING_URLS = "INSERT INTO URLS(user_id,url,created_at,status,app_id) VALUES(?,?,?,?,?)";
+    String INSERTING_DOWN_URLS = "INSERT INTO URLS_DOWN(user_id,url,created_at,status,app_id) VALUES(?,?,?,?,?)";
+
 
     private ArrayList<URLPayload> urlObj;
     public UrlDBInsert(ArrayList<URLPayload> urlList) {
@@ -18,8 +21,6 @@ public class UrlDBInsert {
 
 
     public void insertURLSList(){
-        String sql = "INSERT INTO URLS(user_id,url,created_at,status,app_id) VALUES(?,?,?,?,?)";
-        String sql1 = "INSERT INTO URLS_DOWN(user_id,url,created_at,status,app_id) VALUES(?,?,?,?,?)";
 
         DBCPConnectionHelper dbcpConnectionHelper=new DBCPConnectionHelper();
         Connection connection = null;
@@ -34,7 +35,7 @@ public class UrlDBInsert {
                 Timestamp t = new Timestamp(today.getTime());
                 try {
 
-                    PreparedStatement st = connection.prepareStatement(sql);
+                    PreparedStatement st = connection.prepareStatement(INSERTING_URLS);
                     st.setInt(1, uObj.getUserId());
                     st.setString(2, uObj.getUrl());
                     st.setTimestamp(3, t);
@@ -51,7 +52,7 @@ public class UrlDBInsert {
                 if (uObj.getStatus().equals("down")) {
                     try {
                         {
-                            PreparedStatement stDown = connection.prepareStatement(sql1);
+                            PreparedStatement stDown = connection.prepareStatement(INSERTING_DOWN_URLS);
                             stDown.setInt(1, uObj.getUserId());
                             stDown.setString(2, uObj.getUrl());
                             stDown.setTimestamp(3, t);

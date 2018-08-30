@@ -3,11 +3,13 @@ package com.pulse.dbcp;
 import com.pulse.service.MailingDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.dc.pr.PRError;
 
 import java.sql.*;
 
 public class DBDetailsRetrieve {
     private final static Logger log = LoggerFactory.getLogger(UrlDBInsert.class);
+    private String RETRIEVE_DETAILS = "SELECT email,username FROM users WHERE userid IN (SELECT user_id FROM URLS WHERE url=?)";
 
     private String url;
 
@@ -15,7 +17,6 @@ public class DBDetailsRetrieve {
         this.url = url;
     }
     public MailingDetails retrieveDetails(){
-        String sql = "SELECT email,username FROM users WHERE userid IN (SELECT user_id FROM URLS WHERE url=\'"+url+"')";
         MailingDetails mailingDetails = new MailingDetails();
         DBCPConnectionHelper dbcpConnectionHelper = new DBCPConnectionHelper();
         Connection conn = null;
@@ -24,8 +25,8 @@ public class DBDetailsRetrieve {
             conn = dbcpConnectionHelper.createConnection();
 
 
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-
+            PreparedStatement preparedStatement = conn.prepareStatement(RETRIEVE_DETAILS);
+            preparedStatement.setString(1,url);
             resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
