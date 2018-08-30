@@ -66,7 +66,7 @@ fabric.properties
 ### Intellij Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
-# *.iml
+*.iml
 # modules.xml
 # .idea/misc.xml
 # *.ipr
@@ -116,3 +116,10 @@ pingdom/src/main/resources/pulse.properties
 
 # End of https://www.gitignore.io/api/java,maven,intellij
 .idea
+pulse.properties
+log4j.properties
+pingdom.log
+
+# End of https://www.gitignore.io/api/java,maven,intellij
+.idea
+chapter/chapter.iml

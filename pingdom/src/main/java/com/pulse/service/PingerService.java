@@ -1,45 +1,59 @@
 package com.pulse.service;
 
 import java.io.IOException;
+
+import com.pulse.dbcp.DBDetailsRetrieve;
+import com.pulse.dbcp.DBUrlStatusUpdate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
 public class PingerService implements Runnable {
+    private final static Logger log = LoggerFactory.getLogger(PingerService.class);
     public String pingUrl;
     public PingerService(){
 
     }
 
     public PingerService(String pingUrl) {
-        System.out.println("assigned");
+        log.info("assigned");
         this.pingUrl = pingUrl;
+
     }
 
     public void run() {
         try {
-            System.out.println("called thread"+this.pingUrl);
+           log.info("call thread "+this.pingUrl);
+            System.out.println("thread called");
             URL url = new URL(this.pingUrl);
             url.toURI();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.connect();
             int code = connection.getResponseCode();
             if (code >= 500 && code <= 511) {
-                System.out.println("still down "+this.pingUrl);
+                log.info("still down "+this.pingUrl);
                 this.run();
             } else {
                 EmailService emailService = new EmailService();
-                emailService.sendEmail("dineshkumar.e20@gmail.com","Dinesh",this.pingUrl);
+                DBUrlStatusUpdate dbUrlStatusUpdate = new DBUrlStatusUpdate(this.pingUrl);
+                dbUrlStatusUpdate.deleteDownStatus();
+                dbUrlStatusUpdate.updateDownStatus();
+                DBDetailsRetrieve dbDetailsRetrieve = new DBDetailsRetrieve(this.pingUrl);
+                MailingDetails mailingDetails = dbDetailsRetrieve.retrieveDetails();
+
+                emailService.sendEmail(mailingDetails.getEmail(),mailingDetails.getUsername(),this.pingUrl);
             }
 
         }catch(MalformedURLException e){
-            System.out.println("exception "+e);
+            log.info("exception "+e);
         }
         catch (URISyntaxException e) {
-            System.out.println("exception "+e);
+            log.info("exception "+e);
         } catch (IOException e) {
-            System.out.println("exception "+e);
+            log.info("exception "+e);
             this.run();
         }
     }
