@@ -19,17 +19,18 @@ public class UrlDBInsert {
 
 
     public void insertURLSList(){
+        String sql = "INSERT INTO URLS(user_id,url,created_at,status,app_id) VALUES(?,?,?,?,?)";
+        String sql1 = "INSERT INTO URLS_DOWN(user_id,url,created_at,status,app_id) VALUES(?,?,?,?,?)";
 
+        DBCPConnectionHelper dbcpConnectionHelper=new DBCPConnectionHelper();
         Connection connection = null;
         ResultSet resultSet = null;
-        try {
-            log.info("Entered into the try block");
-            BasicDataSource basicDataSource = DBInit.getInstance().getBasicDataSource();
-            connection = basicDataSource.getConnection();
+
+
+            connection = dbcpConnectionHelper.createConnection();
             //looping through array of objects of type URLPayload and inserting into database
             for(URLPayload uObj:urlObj) {
 
-                String sql = "insert into URLS(user_id,url,created_at,status,app_id) values(?,?,?,?,?)";
                 Date today = new Date();
                 Timestamp t = new Timestamp(today.getTime());
                 try {
@@ -50,7 +51,6 @@ public class UrlDBInsert {
                 //insert to URLS_DOWN table if website is down
                 if (uObj.getStatus().equals("down")) {
                     try {
-                        String sql1 = "insert into URLS_DOWN(user_id,url,created_at,status,app_id) values(?,?,?,?,?)";
                         {
                             PreparedStatement stDown = connection.prepareStatement(sql1);
                             stDown.setInt(1, uObj.getUserId());
@@ -63,24 +63,25 @@ public class UrlDBInsert {
                         }
                     }catch (SQLException e){
                         log.info("Statement 4 error");
+                        throw new RuntimeException(e);
+
+                    }
+                    finally {
+                        try {
+                            if (resultSet != null)
+                                resultSet.close();
+                            if (connection != null)
+                                connection.close();
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
 
 
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+
 
     }
 }

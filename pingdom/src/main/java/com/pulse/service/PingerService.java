@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.pulse.dbcp.DBDetailsRetrieve;
 import com.pulse.dbcp.DBUrlStatusUpdate;
+import org.omg.CORBA.MARSHAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.HttpURLConnection;
@@ -43,9 +44,9 @@ public class PingerService implements Runnable {
                 dbUrlStatusUpdate.deleteDownStatus();
                 dbUrlStatusUpdate.updateDownStatus();
                 DBDetailsRetrieve dbDetailsRetrieve = new DBDetailsRetrieve(this.pingUrl);
-                ArrayList<String> arr = dbDetailsRetrieve.retrieveDetails();
+                MailingDetails mailingDetails = dbDetailsRetrieve.retrieveDetails();
 
-                emailService.sendEmail(arr.get(0),arr.get(1),this.pingUrl);
+                emailService.sendEmail(mailingDetails.getEmail(),mailingDetails.getUsername(),this.pingUrl);
             }
 
         }catch(MalformedURLException e){

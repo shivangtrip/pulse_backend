@@ -18,18 +18,31 @@ public class DBUrlStatusUpdate {
         this.url = url;
     }
     public void deleteDownStatus(){
+        String sql = "DELETE FROM URLS_DOWN WHERE url = ?";
+        DBCPConnectionHelper dbcpConnectionHelper = new DBCPConnectionHelper();
         Connection conn = null;
         ResultSet resultSet = null;
         try{
-            BasicDataSource basicDataSource = DBInit.getInstance().getBasicDataSource();
-            conn = basicDataSource.getConnection();
 
-            String sql = "DELETE from URLS_DOWN where url = ?";
+            conn = dbcpConnectionHelper.createConnection();
+
+
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1,url);
             preparedStatement.executeUpdate();
         }catch (SQLException e){
             log.info("Exception dbcp connection");
+            throw new RuntimeException(e);
+
+        }finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     public void updateDownStatus(){
@@ -45,6 +58,15 @@ public class DBUrlStatusUpdate {
             preparedStatement.executeUpdate();
         }catch(SQLException e){
             log.info("Exception in dbcp connection");
+        }finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
