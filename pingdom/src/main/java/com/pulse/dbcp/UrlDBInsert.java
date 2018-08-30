@@ -1,7 +1,6 @@
 package com.pulse.dbcp;
 
 import com.pulse.payload.URLPayload;
-import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.*;
 import java.util.ArrayList;

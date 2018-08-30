@@ -4,14 +4,12 @@ import java.io.IOException;
 
 import com.pulse.dbcp.DBDetailsRetrieve;
 import com.pulse.dbcp.DBUrlStatusUpdate;
-import org.omg.CORBA.MARSHAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class PingerService implements Runnable {
     private final static Logger log = LoggerFactory.getLogger(PingerService.class);

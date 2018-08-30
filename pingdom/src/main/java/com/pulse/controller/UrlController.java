@@ -1,7 +1,6 @@
 package com.pulse.controller;
 
 
-import com.pulse.repository.UrlsRepository;
 import com.pulse.dbcp.UrlDBInsert;
 import com.pulse.payload.URLPayload;
 import com.pulse.service.PingerService;
