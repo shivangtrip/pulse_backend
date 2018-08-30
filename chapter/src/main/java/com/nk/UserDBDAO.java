@@ -1,5 +1,4 @@
 package com.nk;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
@@ -9,7 +8,7 @@ import java.sql.SQLException;
 
 
 
-public class DetailsRepository {
+public class UserDBDAO {
 
     private String INSERT_USERS = "INSERT INTO users (username,password,email,roles) VALUES( ?, crypt(?, gen_salt('bf')), ?,'admin') RETURNING userid; ";
     private String CHECK_EMAIL_EXISTS = " SELECT * FROM users WHERE email = ?";
@@ -26,7 +25,7 @@ public class DetailsRepository {
     ResultSet rs = null;
     PreparedStatement statement = null;
     QueryHelper queryHelper = new QueryHelper();
-    private final static Logger logger = LoggerFactory.getLogger(DetailsRepository.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserDBDAO.class);
 
     /**
      * for  user signup
@@ -34,7 +33,7 @@ public class DetailsRepository {
      * @param user
      * @return
      */
-    public int signup(UserDetails user) {
+    public int signup(UserPOJO user) {
 
         int userId = 0;
         try {
@@ -61,7 +60,7 @@ public class DetailsRepository {
      * @param user
      * @return
      */
-    public int login(UserDetails user) {
+    public int login(UserPOJO user) {
 
         int userId = 0;
         try {

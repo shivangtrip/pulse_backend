@@ -8,28 +8,28 @@ import static javax.ws.rs.core.Cookie.DEFAULT_VERSION;
 
 
 @Path("users")
-public class DetailsResource {
+public class UserAuthenticationApi {
 
-    DetailsRepository repo = new DetailsRepository();
-    MailService mailService = new MailService();
+    UserDBDAO userDBDAO = new UserDBDAO();
+    MailSender mailService = new MailSender();
     InputValidation inputValidation = new InputValidation();
 
 
     @POST
     @Path("signup")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response userSignup(UserDetails user) {
+    public Response userSignup(UserPOJO user) {
 
         boolean emailCheck = inputValidation.isValidEmail(user.getEmail());
         boolean pwdCheck = inputValidation.isValidPassword(user.getPassword());
         boolean usernameCheck = inputValidation.isValidUsername(user.getUsername());
 
         if (emailCheck && pwdCheck && usernameCheck) {
-            int userId = repo.signup(user);
+            int userId = userDBDAO.signup(user);
 
             if (userId > 0) {
-                int appId = repo.createApp(user.getUsername());
-                repo.userAppRelation(userId, appId);
+                int appId =userDBDAO.createApp(user.getUsername());
+                userDBDAO.userAppRelation(userId, appId);
                 return Response.created(URI.create("/users/"
                         + user.getUsername()))
                         .entity("You have successfully created an account , please login to continue ..").status(201).type(MediaType.APPLICATION_JSON)
@@ -43,15 +43,15 @@ public class DetailsResource {
     @POST
     @Path("login")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response userLogin(UserDetails user) {
+    public Response userLogin(UserPOJO user) {
 
-        int userId = repo.login(user);
+        int userId = userDBDAO.login(user);
         String url = "http://localhost:8080/webapi/users/myapps";
         if (userId > 0) {
-            String cookieValue = String.valueOf(repo.getCookie(userId));
+            String cookieValue = String.valueOf(userDBDAO.getCookie(userId));
 
             if (Integer.valueOf(cookieValue) <= 0) {
-                cookieValue = String.valueOf(repo.addCookie(userId));
+                cookieValue = String.valueOf(userDBDAO.addCookie(userId));
             }
 
             return Response.seeOther(URI.create(url))
@@ -72,10 +72,10 @@ public class DetailsResource {
     @POST
     @Path("adduser")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response createUser(UserDetails userDetails, @CookieParam("cookieId") int adminId) {
+    public Response createUser(UserPOJO userDetails, @CookieParam("cookieId") int adminId) {
         if (adminId > 0) {
             if (mailService.sendMail(userDetails.email)) {
-                repo.addUser(userDetails.getEmail(), adminId);
+                userDBDAO.addUser(userDetails.getEmail(), adminId);
             }
 
             return Response.status(Response.Status.ACCEPTED).entity("added user, invite has been sent ").type(MediaType.APPLICATION_JSON).build();
@@ -94,7 +94,7 @@ public class DetailsResource {
             int id = Integer.valueOf(cookie.getValue());
 
             NewCookie newCookie = new NewCookie(cookie, null, 0, false);
-            repo.deleteCookie(id);
+            userDBDAO.deleteCookie(id);
             return Response.ok("You have successfully logged out").cookie(newCookie).build();
         }
 
@@ -107,7 +107,7 @@ public class DetailsResource {
     @Path("myapps")
     public Response listApps(@CookieParam("cookieId") int cookieId) {
 
-        int appId = repo.appsOfUser(cookieId);
+        int appId = userDBDAO.appsOfUser(cookieId);
         return Response.ok("listing-apps  " + appId).build();
 
     }

@@ -1,6 +1,6 @@
 package com.nk;
 
-public class UserDetails {
+public class UserPOJO {
 
     String username;
     String password;
